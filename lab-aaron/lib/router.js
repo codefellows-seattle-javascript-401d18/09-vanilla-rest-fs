@@ -35,6 +35,7 @@ Router.prototype.delete = function(endpoint, callback) {
 
 Router.prototype.route = function() {
   return (req, res) => {
+    debug('Someone has made contact');
     Promise.all([
       parseUrl(req),
       parseJson(req)
