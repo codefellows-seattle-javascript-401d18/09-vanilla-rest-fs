@@ -66,17 +66,22 @@ module.exports = function(router) {
   ///put method
   router.put('/api/toy', (req, res) => {
     debug('/api/toy PUT');
-    if(!req.url.query._id){
-      res.writeHead(400);
-      res.write('error - no id exists to update that record');
+    if(!req.body._id && !req.body.name && !req.body.desc) {
+      res.writeHead(400, {'Content-Type': 'application/json'});
+      res.write('error; body improperly formatted');
       res.end();
       return;
     }
-    storage.put('toy', req.url.query._id, req);
-    res.writeHead(204, {
-      'Content-Type': 'application/json',
-    });
-    res.write('Updated this toy with ' + req.body.name + ' and ' + req.body.desc);
-    res.end();
+    storage.update('toy', req.body)
+      .then(() => {
+        res.writeHead(204, {'Content-Type': 'text/plain'});
+        res.end();
+        return;
+      })
+      .catch(err => {
+        res.writeHead(400, {'Content-Type': 'text/plain'});
+        res.write('bad request; item id required to get record');
+        res.end();
+      });
   });
 };
