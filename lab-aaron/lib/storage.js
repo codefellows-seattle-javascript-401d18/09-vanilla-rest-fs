@@ -1,28 +1,38 @@
 'use strict';
 
 const debug = require('debug')('http:storage');
+const Promise = require('bluebird');
+const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
 
 const storage = module.exports = {};
-const memory = {};
 
 storage.create = function(schema, item) {
   debug('#create');
-  if(!schema) return Promise.reject(new Error('cannot create; schema required'));
-  if(!item) return Promise.reject(new Error('cannot create; item required'));
-  if(!memory[schema]) memory[schema] = {};
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('cannot create; schema required'));
+    if(!item) return reject(new Error('cannot create; item required'));
 
-  memory[schema][item._id] = item;
-  return Promise.resolve(item);
+    let json = JSON.stringify(item);
+
+    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json)
+      .then(() => resolve(item))
+      .catch(console.error);
+  });
 };
 
+
 storage.fetchOne = function(schema, itemId) {
+  debug('#fetchOne');
   return new Promise((resolve, reject) => {
     if(!schema) return reject(new Error('cannot get item; schema required'));
     if(!itemId) return reject(new Error('cannot get item; itemId required'));
-    if(!memory[schema]) return reject(new Error('cannot get item; schema does not exist'));
-    if(!memory[schema][itemId]) return reject(new Error('cannot get item; item does not exist'));
 
-    return resolve(memory[schema][itemId]);
+    return fs.readFileProm(`${__dirname}/../data${schema}/${itemId}.json`)
+      .then(buff => resolve(JSON.parse(buff.toString())))
+      .catch(err => {
+        console.error(err);
+        return err;
+      });
   });
 };
 
@@ -31,11 +41,14 @@ storage.fetchAll = function() {
 };
 
 storage.update = function(schema, item) {
-  return new Promise((resolve, reject) => {
+  debug('#update');
 
-  })
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('cannot update item: schema required'));
+    if(!item) return reject(new Error('cannot update item: updated item required'));
+  });
 };
 
-storage.fetchAll = function() {
+storage.delete = function() {
 
 };
