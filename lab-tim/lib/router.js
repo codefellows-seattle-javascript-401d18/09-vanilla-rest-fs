@@ -7,7 +7,9 @@ const parseJson = require('./parse-json');
 const Router = module.exports = function() {
   this.routes = {
     GET: {
-      // '/cowsay': () => {}
+      // '/cowsay': (req, res) => { // do a thing },
+      // '/toy': (req, res) => { // do a thing }
+      // '/kid': 'hello world' // this would not validate in our server callback
     },
     POST: {},
     PUT: {},
@@ -34,6 +36,7 @@ Router.prototype.delete = function(endpoint, callback) {
 
 Router.prototype.route = function() {
   return (req, res) => {
+    debug('Router has been accessed!')
     Promise.all([
       parseUrl(req),
       parseJson(req)
