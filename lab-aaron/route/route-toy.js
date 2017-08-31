@@ -11,7 +11,7 @@ module.exports = function(router) {
     try {
       let newToy = new Toy(req.body.name, req.body.desc);
       storage.create('toy', newToy)
-        .then(toy => response.sendJson(res, toy));
+        .then(toy => response.sendJson(res, 201, toy));
     } catch(e) {
       console.error(e);
       res.sendText(res, 400, `bad request: ${e.message}`);
@@ -39,6 +39,31 @@ module.exports = function(router) {
     res.end();
   });
 
+  router.put('/api/toy'), (req, res) => {
+    debug('/api/toy PUT');
+    if (req.url.query._id) {
+      if(!req.body._id && !req.body.name && !req.body.desc) {
+        res.writeHead(400, {'Content-Type': 'application/json'});
+        res.write('bad request; body improperly formatted');
+        res.end();
+        return;
+      }
+      storage.update('toy', req.body)
+        .then(() => {
+          res.writeHead(204, {'Content-Type': 'text/plain'});
+          res.end;
+          return;
+        })
+        .catch(err => {
+          res.writeHead(400, {'Content-Type': 'application/json'});
+          res.write(`bad request; ${err.message}`);
+          res.end();
+          return;
+        });
+      return;
+    }
+  };
+
   router.delete('/api/toy', (req, res) => {
     debug('api/toy DELETE');
     if(req.url.query._id) {
@@ -53,5 +78,8 @@ module.exports = function(router) {
         });
       return;
     }
+    res.writeHead(400, {'Content-Type': 'text/plain'});
+    res.write('bad request; item id required to get record');
+    res.end();
   });
 };
