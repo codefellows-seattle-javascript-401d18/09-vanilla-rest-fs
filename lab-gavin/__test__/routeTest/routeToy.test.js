@@ -137,7 +137,11 @@ describe('#ROUTE-TOY-TEST', function() {
       test('Should respond with no body content for a put request with a valid body', done => {
         superagent.put('localhost:3000/api/toy')
           .query({'_id': this.toy._id})
-          .send({'name': 'PowerRangerRedefined', 'desc': 'Totally Awesome Redefined Red Ranger', '_id': '${this.toy._id}'})
+          .send({
+            'name': 'PowerRangerRedefined',
+            'desc': 'Totally Awesome Redefined Red Ranger',
+            '_id': this.toy._id,
+          })
           .type('application/json')
           .end((err, res) => {
             expect(res.status).toEqual(204);
