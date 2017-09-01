@@ -39,7 +39,7 @@ Using node.js, HTTP, superagent, cowsay, and querystring I have created a Server
   `http GET localhost:3000/api/toy/PowerRanger`
 
   `http GET localhost:3000/toy/api/PowerRanger`
-  
+
   `http GET localhost:3000/api/toy/`
   ### GET requests
   + Example.==>`http GET localhost:3000/api/toy?_id=''`
