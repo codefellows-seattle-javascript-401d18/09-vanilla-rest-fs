@@ -24,21 +24,25 @@ Router.prototype.post = function(endpoint, callback) {
 };
 
 Router.prototype.put = function(endpoint, callback) {
+  debug(`#Router: mounted ${endpoint} PUT`);
   this.routes.PUT[endpoint] = callback;
 };
 
 Router.prototype.delete = function(endpoint, callback) {
+  debug(`#Router: mounted ${endpoint} DELETE`);
   this.routes.DELETE[endpoint] = callback;
 };
 
 Router.prototype.route = function() {
   return (req, res) => {
+    debug('Someone knows I exist! They have made contact!!');
     Promise.all([
       parseUrl(req),
       parseJson(req),
     ])
       .then(() => {
         if(typeof this.routes[req.method][req.url.pathname] === 'function') {
+          debug(`Houston, we've received a request: ${req.url.pathname} ${req.method}`);
           this.routes[req.method][req.url.pathname](req, res);
           return;
         }
@@ -48,7 +52,7 @@ Router.prototype.route = function() {
         res.end();
       })
       .catch(err => {
-        console.error(err);
+        debug(`Houston, we have a problem: \n${err.message}`);
 
         res.writeHead(400, {'Content-Type': 'text/plain'});
         res.write('bad request; something went wrong in the router');

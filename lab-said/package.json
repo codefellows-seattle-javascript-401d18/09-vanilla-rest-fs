@@ -1,5 +1,5 @@
 {
-  "name": "lab-said",
+  "name": "d18",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -24,7 +24,7 @@
     "start": "node server.js",
     "start:watch": "nodemon server.js",
     "start:debug": "DEBUG=http* nodemon server.js",
-    "debbuger": "node inspect server.js",
+    "debugger": "node inspect server.js",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "lint": "eslint .",
@@ -37,9 +37,11 @@
     "debug": "^3.0.1",
     "eslint": "^4.5.0",
     "jest": "^20.0.4",
+    "faker": "^4.1.0",
     "superagent": "^3.6.0"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "uuid": "^3.1.0"
   }
 }
