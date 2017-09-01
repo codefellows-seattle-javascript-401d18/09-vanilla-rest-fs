@@ -6,8 +6,21 @@ const response = require('../lib/response');
 const debug = require('debug')('http:route-toy');
 
 module.exports = function (router) {
+
+//FIX THIS ONCE STORAGE.DELETE IS DONE;
+  router.delete('/api/data', (req, res) => {
+    debug('/api/data DELETE');
+    try {
+      // storage.delete(//some things//)
+      // .then(//something => response.sendText(res, 201, something))
+    } catch (e) {
+      console.error(e);
+      response.sendText(res, 400, 'bad request: cannot delete this stuff');
+    }
+  });
+
   router.post('/api/toy', (req, res) => {
-    debug('api/toy POST');
+    debug('/api/toy POST');
     try {
       let newToy = new Toy(req.body.name, req.body.desc);
       storage.create('toy', newToy)
@@ -15,6 +28,7 @@ module.exports = function (router) {
     } catch (e) {
       console.error(e);
       response.sendText(res, 400, `bad request: ${e.message}`);
+      //check if return is necessary here
     }
   });
 
@@ -23,50 +37,44 @@ module.exports = function (router) {
     if (req.url.query._id) {
       storage.fetchOne('toy', req.url.query._id)
         .then(toy => {
-          res.writeHead(200, {'Content-Type': 'application/json'});
-          res.write(JSON.stringify(toy));
-          res.end();
+          response.sendJson(res, 200, toy);
         })
         .catch(err => {
           console.error(err);
-          res.writeHead(400, {'Content-Type': 'text/plain'});
-          res.write('bad request: could not find record');
-          res.end();
+          response.sendText(res, 400, 'bad request: could not find record');
         });
       return;
     }
-
-    res.writeHead(400, {'Content-Type': 'text/plain'});
-    res.write(`bad request: item id required to get record`);
-    res.end();
+    response.sendText(res, 400, 'bad request: item id required to get record');
+    return; //do we need this?
   });
 
   router.put('/api/toy', (req, res) => {
     debug('/api/toy PUT');
     if (req.url.query._id) {
       if(!req.body._id && !req.body.desc) {
-        res.writeHead(400, {'Content-Type': 'application/json'});
-        res.write(`bad request: body improperly formatted`);
-        res.end();
+        response.sendJson(res, 400, `bad request: body improperly formatted`);
         return;
       }
       storage.update('toy', req.body)
         .then(()=> {
+          // response.sendText(res, 204, '') - need to look at this
           res.write(204, {'Content-Type': 'text/plain'});
           res.end();
           return;
         })
         .catch(err => {
-          res.writeHead(400, {'Content-Type': 'application/json'});
-          res.write(`bad request: ${err.message}`);
-          res.end();
+          response.sendJson(res, 400, `bad request: ${err.message}`);
+          // res.writeHead(400, {'Content-Type': 'application/json'});
+          // res.write(`bad request: ${err.message}`);
+          // res.end();
           return;
         });
       return;
     }
-
-    res.writeHead(400, {'Content-Type': 'text/plain'});
-    res.write('bad request: item id required to get record');
-    res.end();
+    response.sendText(res, 400, 'bad request: item id required to get record');
+    // res.writeHead(400, {'Content-Type': 'text/plain'});
+    // res.write('bad request: item id required to get record');
+    // res.end();
   });
 };

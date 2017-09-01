@@ -6,6 +6,20 @@ const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
 
 const storage = module.exports = {};
 
+storage.update = function(schema, item) {
+  debug('#update');
+
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('cannot update item: schema required'));
+    if(!item) return reject(new Error('cannot update item: update item required'));
+
+    return fs.writeFileProm(`${__dirname}/../data/${schema}${item._id}.json`, json) {
+      .then((item) => resolve(item))
+      .catch(console.error);
+    };
+  });
+};
+
 storage.create = function(schema, item) {
   debug('#create');
   return new Promise((resolve, reject) => {
@@ -35,20 +49,35 @@ storage.fetchOne = function(schema, itemId) {
   });
 };
 
-storage.fetchAll = function() {
+storage.fetchAll = function(schema, dir) {
 //FILL IN
-};
-
-storage.update = function(schema, item) {
-  debug('#update');
+//
+  debug('#fetchAll');
 
   return new Promise((resolve, reject) => {
-    if(!schema) return reject(new Error('cannot update item: schema required'));
-    if(!item) return reject(new Error('cannot update item: update item required'));
+    if(!dir) return reject(new Error('cannot get all the items; provide a valid directory'));
+    if (!schema) return reject(new Error('cannot get all the items; item ids required'));
+    // if (no items at all in the thing) return reject;
 
+    return fs.readdirProm(err, `${__dirname}/../data/${schema}` => {
+      if (err) {
+        err => {
+          console.error(err);
+          return err;
+        };
+        // GOTTA FIX THIS//
+        resolve(JSON.parse(files.toString()));
+      }
+    });
   });
 };
 
-storage.delete = function() {
+storage.delete = function(schema, item) {
+  debug('#storage delete');
+
+  return new Promise((resolve, reject) => {
+
+  })
 //FILL IN
+//unlink
 };
