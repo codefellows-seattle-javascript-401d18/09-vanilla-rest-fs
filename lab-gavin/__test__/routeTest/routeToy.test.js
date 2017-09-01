@@ -39,7 +39,7 @@ describe('#ROUTE-TOY-TEST', function() {
           });
       });
 
-      test('Should return name and desc of toy user posted', done => {
+      test('Should return 201 and name/desc of toy user posted', done => {
         superagent.post('localhost:3000/api/toy')
           .type('application/json')
           .send({
@@ -52,8 +52,18 @@ describe('#ROUTE-TOY-TEST', function() {
             this.aNewID = res.body._id;
             expect(this.toy.name).toEqual('PowerRanger');
             expect(this.toy.desc).toEqual('Totally Awesome Red Ranger');
-            // console.log(this.toy);
             expect(res.status).toEqual(201);
+            done();
+          });
+      });
+      test('Should return 400 when not provding both name/desc', done => {
+        superagent.post('localhost:3000/api/toy')
+          .type('application/json')
+          .send({
+            desc: 'Totally Awesome Red motherfucking Ranger',
+          })
+          .end((err, res) => {
+            expect(res.status).toEqual(400);
             done();
           });
       });
