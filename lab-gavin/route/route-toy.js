@@ -62,7 +62,12 @@ module.exports = function(router) {
       response.sendText(res, 400, `Error, No ID exists`);
       return;
     }
-    storage.put('toy', req.url.query._id, req);
-    response.sendText(res, 204, `Updated toy`);
+    let updateToy = req.body;
+    storage.put('toy', updateToy)
+      .then(toy => response.sendJson(res, 204, toy))
+      .catch(err => {
+        console.error(err);
+        response.sendText(res, 400, `bad request: ${err.message}`);
+      });
   });
 };

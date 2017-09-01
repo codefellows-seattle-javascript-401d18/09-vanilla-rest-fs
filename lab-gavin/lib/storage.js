@@ -59,14 +59,30 @@ storage.delete = function(schema, itemId) {
   });
 };
 
-storage.put = function(schema, id, req) {
-  debug('#delete');
-  if(!schema) return Promise.reject(new Error('cannot update; schema required'));
-  if(!id) return Promise.reject(new Error('cannot update; id required'));
 
-  if(req){
-    fs.writeFileProm(`${__dirname}/../data/${schema}/${id}.json`, req);
-    return Promise.resolve(req);
-  }
+storage.put = function(schema, item) {
+  debug('#storage.update');
+  return new Promise(function(resolve, reject) {
+    if(!schema) return reject(new Error('cannot update; schema required'));
+    if(!item) return reject(new Error('cannot update; item required'));
 
+    let json = JSON.stringify(item);
+
+    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json)
+      .then(() => resolve(json))
+      .catch(console.error);
+  });
 };
+// storage.put = function(schema, item) {
+//   debug('#delete');
+//   if(!schema) return Promise.reject(new Error('cannot update; schema required'));
+//   if(!item) return Promise.reject(new Error('cannot update; id required'));
+//
+//   let json = JSON.stringify(item);
+//
+//   if(req){
+//     fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json);
+//     return Promise.resolve(item);
+//   }
+//
+// };
