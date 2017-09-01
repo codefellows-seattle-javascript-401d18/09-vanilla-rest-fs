@@ -7,15 +7,6 @@ const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
 
 const storage = module.exports = {};
 
-// fs.readFileProm(`${__dirname}/../data/${schema}/${item_id}.json)
-// .then(...)
-// .catch(...)
-
-// const memory = {
-//   'toy': {
-//     '123-456-789': {_id: '123-456-789', name: 'barney', desc: 'purple dino'}
-//   }
-// }
 
 storage.create = function(schema, item) {
   debug('#storage.create');
@@ -45,9 +36,7 @@ storage.update = function(schema, item) {
       .catch(console.error);
   });
 };
-// if(!memory[schema]) memory[schema] = {};
-// if(!memory[schema][item._id]) memory[schema] = {};
-// memory[schema][item._id] = item;
+
 
 storage.fetchOne = function(schema, itemId) {
   debug('#storage.fetchOne');
@@ -64,17 +53,6 @@ storage.fetchOne = function(schema, itemId) {
   });
 };
 
-// storage.fetchAll = function(schema) {
-//   debug('#storage.fetchAll');
-//   return new Promise((resolve, reject) => {
-//     if(!schema) return reject(new Error('cannot get items; schema required'));
-//     let toyArray = [];
-//     memory[schema].forEach(function(toyId) {
-//       toyArray.push(toyId);
-//     });
-//     return resolve(toyArray);
-//   });
-// };
 
 storage.remove = function(schema, itemId) {
   debug('#storage.remove');
