@@ -4,7 +4,7 @@ Lab-08
 
 Overview
 
-The purpose of the lab was to make a Create a HTTP Server using the http module that we could GET, POST, PUT, and DELETE a simple resource to. The resources can is accessed by the uuid's and the name, model and year can all be changed.
+The purpose of the lab was to make a Create a HTTP Server using the http module that we could GET, POST, PUT, and DELETE a simple resource to. The resources can be accessed by the uuid's and the name, model and year can all be changed.
 
 How To Use
 Fork this repository and clone the forked repository anywhere you'd like on your computer.
