@@ -69,24 +69,27 @@ module.exports = function(router) {
     res.write('bad request; item id required to get record');
     res.end();
   });
+
+
+  router.delete('/api/data/toy', (req, res) => {
+    debug('/api/data/toy DELETE');
+    if(req.url.query._id) {
+      storage.delete('toy', req.url.query._id)
+        .then(() => {
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.write('bad request; could not find record');
+          res.end();
+        })
+        .catch(err => {
+          console.error(err);
+          res.writeHead(400, {'Content-Type': 'text/plain'});
+          res.write('bad request; could not find record');
+          res.end();
+        });
+      return;
+    }
+    res.writeHead(400, {'Content-Type': 'text/plain'});
+    res.write('bad request; item id required to get record');
+    res.end();
+  });
 };
-
-
-
-
-// router.delete('/api/toy', (req, res) => {
-//   debug('/api/toy DELETE');
-//   if(req.url.query._id) {
-//     storage.delete('toy', req.url.query._id)
-//     .then(() => {
-//       res.writeHead(201, {'Content-Type': 'application/json'});
-//       res.end();
-//     })
-//     .catch(err => {
-//       console.error(err);
-//       res.writeHead(400, {'Content-Type': 'text/plain'});
-//       res.write('bad request: could not create a new toy');
-//       res.end();
-//     });
-//   }
-// });
