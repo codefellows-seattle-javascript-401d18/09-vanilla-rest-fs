@@ -42,13 +42,21 @@ storage.fetchAll = function() {
 
 storage.update = function(schema, item) {
   debug('#update');
-
   return new Promise((resolve, reject) => {
     if(!schema) return reject(new Error('cannot update item: schema required'));
     if(!item) return reject(new Error('cannot update item: updated item required'));
   });
 };
 
-storage.delete = function() {
+storage.delete = function(schema, id) {
+  debug('#delete');
+  if(!schema) return Promise.reject(new Error('cannot create; item required'));
+  if(!id) return Promise.reject(new Error('cannot get item; '))
 
+};
+
+storage.put = function(schem, id, req) {
+  debug('#put');
+  if(!schema) return Promise.reject(new Error('cannot update; schema required'));
+  if(!id) return Promise.reject(new Error('cannot update; id required'));
 };
