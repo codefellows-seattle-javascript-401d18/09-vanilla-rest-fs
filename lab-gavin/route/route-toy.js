@@ -12,6 +12,7 @@ module.exports = function(router) {
     debug('/api/toy POST');
     if (!req.body.name || !req.body.desc){
       response.sendText(res, 400, `Bad Request, must have both name and desc`);
+      return;
     }
     try {
       let newToy = new Toy(req.body.name, req.body.desc);

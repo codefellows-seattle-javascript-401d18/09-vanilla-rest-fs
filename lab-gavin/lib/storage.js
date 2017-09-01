@@ -47,7 +47,8 @@ storage.delete = function(schema, itemId) {
     if(!itemId) return reject(new Error('cannot create; item required'));
 
     if (itemId){
-      return fs.unlinkProm(`${__dirname}/../data/${schema}/${itemId}.json`)
+
+      fs.unlinkProm(`${__dirname}/../data/${schema}/${itemId}.json`)
         .then(() => {
           resolve(itemId);
         })
