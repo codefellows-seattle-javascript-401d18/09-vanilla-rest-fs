@@ -173,7 +173,7 @@ describe('#ROUTE-TOY-TEST', function() {
       });
 
 
-      test('Should respond with 204 no body content for a request with a valid resource ID.', done => {
+      test('Should respond with 204 for a request with a valid resource ID.', done => {
         superagent.delete('localhost:3000/api/toy')
           .query({'_id': this.toy._id})
           .type('application/json')
