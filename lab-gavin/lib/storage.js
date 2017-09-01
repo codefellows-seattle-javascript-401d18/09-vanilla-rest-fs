@@ -7,7 +7,7 @@ const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
 
 
 const storage = module.exports = {};
-// const memory = {};
+
 
 
 storage.create = function(schema, item) {
@@ -52,11 +52,9 @@ storage.delete = function(schema, itemId) {
           resolve(itemId);
         })
         .catch((err) => {
-          // console.error(err);
           return reject(err);
         });
     }
-    return reject(err);
   });
 };
 
@@ -69,6 +67,5 @@ storage.put = function(schema, id, req) {
     fs.writeFileProm(`${__dirname}/../data/${schema}/${id}.json`, req);
     return Promise.resolve(req);
   }
-  return Promise.reject(new Error('data must have id'));
 
 };
