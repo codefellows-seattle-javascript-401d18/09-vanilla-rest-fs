@@ -7,7 +7,9 @@ const parseJson = require('./parse-json');
 const Router = module.exports = function() {
   this.routes = {
     GET: {
-      // '/cowsay': () => {}
+      // '/cowsay': (req, res) => { // do a thing },
+      // '/toy': (req, res) => { // do a thing }
+      // '/kid': 'hello world' // this would not validate in our server callback
     },
     POST: {},
     PUT: {},
@@ -16,34 +18,31 @@ const Router = module.exports = function() {
 };
 
 Router.prototype.get = function(endpoint, callback) {
-  debug(`#Router: mounted ${endpoint} GET`);
+  // debug('#Router.get')
   this.routes.GET[endpoint] = callback;
 };
 
 Router.prototype.post = function(endpoint, callback) {
-  debug(`#Router: mounted ${endpoint} POST`);
   this.routes.POST[endpoint] = callback;
 };
 
 Router.prototype.put = function(endpoint, callback) {
-  debug(`#Router: mounted ${endpoint} PUT`);
   this.routes.PUT[endpoint] = callback;
 };
 
 Router.prototype.delete = function(endpoint, callback) {
-  debug(`#Router: mounted ${endpoint} DELETE`);
   this.routes.DELETE[endpoint] = callback;
 };
 
 Router.prototype.route = function() {
   return (req, res) => {
+    debug('Router has been accessed!');
     Promise.all([
       parseUrl(req),
       parseJson(req),
     ])
       .then(() => {
         if(typeof this.routes[req.method][req.url.pathname] === 'function') {
-          debug(`Request received:${req.url.pathname}${req.method}`);
           this.routes[req.method][req.url.pathname](req, res);
           return;
         }
