@@ -20,7 +20,7 @@ describe('Testing Toy Routes', function() {
   describe('requests made to /api/toy', () => {
     describe('using GET method', () => {
       test('should return a toy object given a properly formatted request', done => {
-
+        
       });
     });
   });

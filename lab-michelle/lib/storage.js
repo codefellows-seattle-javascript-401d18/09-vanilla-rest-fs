@@ -76,6 +76,11 @@ storage.delete = function(schema, item) {
   debug('#storage delete');
 
   return new Promise((resolve, reject) => {
+    return fs.unlinkProm(`${__dirname}/../data/${schema}/${itemId}.json`)
+      // .then(buff => resolve(buff.delete();) <-- Is this even a thing
+      .catch(err => {
+        console.error(err);
+        return err;
 
   })
 //FILL IN
