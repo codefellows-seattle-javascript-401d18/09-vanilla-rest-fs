@@ -3,26 +3,22 @@
 const debug = require('debug')('http:route-toy');
 const Toy = require('../model/toy');
 const storage = require('../lib/storage');
+const response = require('../lib/response');
 
 
 module.exports = function(router) {
   //Post
   router.post('/api/toy', (req, res) => {
     debug('/api/toy POST');
+    if (!req.body.name || !req.body.desc){
+      response.sendText(res, 400, `Bad Request, must have both name and desc`);
+    }
     try {
       let newToy = new Toy(req.body.name, req.body.desc);
-      // if successful, store this thing in memory using the storage module
       storage.create('toy', newToy)
-        .then(toy => {
-          res.writeHead(201, {'Content-Type': 'application/json'});
-          res.write(JSON.stringify(toy));
-          res.end();
-        });
+        .then(toy => response.sendJson(res, 201, toy));
     } catch(e) {
-      // console.error(e);
-      res.writeHead(400, {'Content-Type': 'text/plain'});
-      res.write('bad request: could not create a new toy');
-      res.end();
+      response.sendText(res, 400, `Bad Request: ${e.message}`);
     }
   });
   //GET
@@ -30,45 +26,31 @@ module.exports = function(router) {
     debug('/api/toy GET');
     if(req.url.query._id) {
       storage.fetchOne('toy', req.url.query._id)
-        .then(toy => {
-          res.writeHead(200, {'Content-Type': 'application/json'});
-          res.write(JSON.stringify(toy));
-          res.end();
-        })
+        .then(toy => response.sendJson(res, 200, toy))
         .catch(err => {
           console.error(err);
-          res.writeHead(400, {'Content-Type': 'text/plain'});
-          res.write('bad request; could not find record');
-          res.end();
+          response.sendText(res, 400, `Bad Request, Couldn't find record`);
+
         });
       return;
     }
-
-    res.writeHead(400, {'Content-Type': 'text/plain'});
-    res.write('bad request; item id required to get record');
-    res.end();
+    response.sendText(res, 400, `Bad Request, couldn't find record`);
   });
 
   //DELETE
   router.delete('/api/toy', (req, res) => {
     debug('/api/toy DELETE');
     if(!req.url.query._id){
-      res.writeHead(404);
-      res.write('error - Improper format for DELETE');
-      res.end();
+      response.sendText(res, 404, `Error, Improper format for DELETE`);
       return ;
     }
     storage.delete('toy', req.url.query._id)
       .then(toy => {
-        res.writeHead(204, {'Content-Type': 'text/plain'});
-        res.write('Deleted ' + toy + req.url.query._id + 'from storage');
-        res.end();
+        response.sendText(res, 204, `Deleted Record + ${toy}`);
       })
       .catch(err => {
         console.error(err);
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write('bad request; could not find record');
-        res.end();
+        response.sendText(res, 404, `Bad Request, couldn't find record`);
       });
     return;
   });
@@ -76,16 +58,10 @@ module.exports = function(router) {
   router.put('/api/toy', (req, res) => {
     debug('/api/toy PUT');
     if(!req.url.query._id){
-      res.writeHead(400);
-      res.write('error - no id exists to update that record');
-      res.end();
+      response.sendText(res, 400, `Error, No ID exists`);
       return;
     }
     storage.put('toy', req.url.query._id, req);
-    res.writeHead(204, {
-      'Content-Type': 'application/json',
-    });
-    res.write('Updated this toy with ' + req.body.name + ' and ' + req.body.desc);
-    res.end();
+    response.sendText(res, 204, `Updated toy`);
   });
 };
