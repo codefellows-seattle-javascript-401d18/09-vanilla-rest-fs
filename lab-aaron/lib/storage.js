@@ -51,11 +51,11 @@ storage.update = function(schema, item) {
 storage.delete = function(schema, id) {
   debug('#delete');
   if(!schema) return Promise.reject(new Error('cannot create; item required'));
-  if(!id) return Promise.reject(new Error('cannot get item; '))
+  if(!id) return Promise.reject(new Error('cannot get item; id required'));
 
 };
 
-storage.put = function(schem, id, req) {
+storage.put = function(schema, id, req) {
   debug('#put');
   if(!schema) return Promise.reject(new Error('cannot update; schema required'));
   if(!id) return Promise.reject(new Error('cannot update; id required'));
