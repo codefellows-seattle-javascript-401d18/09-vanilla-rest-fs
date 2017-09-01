@@ -1,4 +1,4 @@
-const server = require('../../server.js');
+const server = require('../server.js');
 const superagent = require('superagent');
 
 describe('#ROUTE-TOY-TEST', function() {
@@ -43,15 +43,15 @@ describe('#ROUTE-TOY-TEST', function() {
         superagent.post('localhost:3000/api/toy')
           .type('application/json')
           .send({
-            name: 'GIJoe',
-            desc: 'Cobra Commander',
+            name: 'PowerRanger',
+            desc: 'Totally Awesome Red Ranger',
           })
           .end((err, res) => {
             // if(err) console.error(err);
             this.toy = JSON.parse(res.text);
             this.aNewID = res.body._id;
-            expect(this.toy.name).toEqual('GIJoe');
-            expect(this.toy.desc).toEqual('Cobra Commander');
+            expect(this.toy.name).toEqual('PowerRanger');
+            expect(this.toy.desc).toEqual('Totally Awesome Red Ranger');
             expect(res.status).toEqual(201);
             done();
           });
@@ -60,7 +60,7 @@ describe('#ROUTE-TOY-TEST', function() {
         superagent.post('localhost:3000/api/toy')
           .type('application/json')
           .send({
-            desc: 'Beachhead',
+            desc: 'Totally Awesome Red motherfucking Ranger',
           })
           .end((err, res) => {
             expect(res.status).toEqual(400);
@@ -99,8 +99,8 @@ describe('#ROUTE-TOY-TEST', function() {
           .query({'_id': this.toy._id})
           .type('application/json')
           .end((err, res) => {
-            expect(res.body.name).toEqual('GIJoe');
-            expect(res.body.desc).toEqual('Duke');
+            expect(res.body.name).toEqual('PowerRanger');
+            expect(res.body.desc).toEqual('Totally Awesome Red Ranger');
             expect(res.status).toEqual(200);
             done();
           });
@@ -137,7 +137,7 @@ describe('#ROUTE-TOY-TEST', function() {
       test('Should respond with no body content for a put request with a valid body', done => {
         superagent.put('localhost:3000/api/toy')
           .query({'_id': this.toy._id})
-          .send({'name': 'GIJoe', 'desc': 'Snake eye redfined', '_id': '${this.toy._id}'})
+          .send({'name': 'PowerRangerRedefined', 'desc': 'Totally Awesome Redefined Red Ranger', '_id': '${this.toy._id}'})
           .type('application/json')
           .end((err, res) => {
             expect(res.status).toEqual(204);
