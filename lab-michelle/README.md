@@ -1,4 +1,8 @@
 TO DO TODAY:
+-TESTS
+-In Storage.js: Storage.update, storage.delete
+-In Route-toy.js: Router.delete
+
 refactor the storage module to take advantage of the promisified fs module
 use the bluebird Promise library as a way to overwrite the pre-existing Promise implementation in NodeJS
 DONE refactor your response functionality to a modular component of the application

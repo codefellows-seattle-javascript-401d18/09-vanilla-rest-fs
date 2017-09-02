@@ -14,16 +14,10 @@ module.exports = function(req) {
           req.body = JSON.parse(body);
           resolve(req);
         } catch(e) {
-          console.error(e);
+          // console.error(e);
           reject(e);
         }
       });
-
-      req.on('error', err => {
-        console.error(err);
-        reject(err);
-      });
-
       return;
     }
     debug('parse-json GET || DELETE');
