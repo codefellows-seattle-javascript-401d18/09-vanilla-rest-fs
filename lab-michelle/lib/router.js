@@ -3,6 +3,7 @@
 const debug = require('debug')('http:router');
 const parseUrl = require('./parse-url');
 const parseJson = require('./parse-json');
+const response = require('./response');
 
 const Router = module.exports = function() {
   this.routes = {
@@ -47,16 +48,12 @@ Router.prototype.route = function() {
           return;
         }
 
-        res.writeHead(404, {'Content-Type': 'text/plain'});
-        res.write('route not found');
-        res.end();
+        response(res, 400, 'route not found');
       })
       .catch(err => {
         debug(`Houston, we have a problem: \n${err.message}`);
 
-        res.writeHead(400, {'Content-Type': 'text/plain'});
-        res.write('bad request; something went wrong in the router');
-        res.end();
+        response(res, 400, 'bad request; something went wrong in the router');
       });
   };
 };
