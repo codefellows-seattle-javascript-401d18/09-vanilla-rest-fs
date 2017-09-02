@@ -29,7 +29,7 @@ storage.fetchOne = function(schema, itemId) {
   debug('#fetchOne')
   return new Promise((resolve, reject) => {
     if(!schema) return reject(new Error('cannot get item; schema required'))
-    if(!itemId) return reject(new Error('cannon get item; itemId required'))
+    if(!itemId) return reject(new Error('cannot get item; itemId required'))
 
     return fs.readFileProm(`${__dirname}/../data/${schema}/${itemId}.json`)
       .then(buff => resolve(JSON.parse(buff.toString())))
@@ -50,11 +50,20 @@ storage.update = function(schema, item) {
   return new Promise((resolve, reject) => {
     if(!schema) return reject(new Error('cannot update item; schema required'))
     if(!item) return reject(new Error('cannot update item; updated item required'))
-
-    
   })
 }
 
-storage.delete = function() {
+storage.delete = function(schema, itemId) {
+  debug('#delete')
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('cannot get item; schema required'))
+    if(!itemId) return reject(new Error('cannot get item; itemId required'))
 
+    return fs.unlinkProm(`${__dirname}/../data/${schema}/${itemId}.json`)
+      .then(() => resolve())
+      .catch(err => {
+        console.error(err)
+        return err
+      })
+  })
 }
