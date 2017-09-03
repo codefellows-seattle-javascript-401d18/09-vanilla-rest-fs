@@ -1,24 +1,7 @@
-TO DO TODAY:
--TESTS
--In Storage.js: Storage.update, storage.delete
--In Route-toy.js: Router.delete
-
-refactor the storage module to take advantage of the promisified fs module
-use the bluebird Promise library as a way to overwrite the pre-existing Promise implementation in NodeJS
-DONE refactor your response functionality to a modular component of the application
-ensure that your passing in any dynamic error messages where applicable
-
-
-
-documentation:
-write a paragraph about what your API does
-document any resources that helped you complete your assignment
-define how another dev can 'get started' with your api on their own
-document each of the available endpoints; including example request/response formats for each
-
 # ~~Vanilla~~ Rocky Road API
 
 ## Description
+It was a rocky road getting this API to work but hey, now it does something!
 This API allows you to define and GET/PUT/POST/DELETE a toy object that has a name, description, and unique ID. Additionally, you can store that toy within the object that represents memory. Basically, we are practicing writing a router from scratch, instead of using Express - meaning we explicitly define what happens when we POST/PUT/GET/DELETE to this API.
 
 ## Getting Started
@@ -30,21 +13,32 @@ npm i
 ## Endpoints & Request/Responses
 Our endpoint is: /api/toy/
 
+Sample request:
+```
+POST http://localhost:3000/api/toy?name='barney' desc="purple dino"
+```
+
+Sample response:
+```
+{"name":"barney","desc":"purple dino","_id":"c84d19fd-2e41-4050-9fac-1f1882fa6e76"}
+```
+
+HTTP Methods Available:
 POST http://localhost:3000/api/toy
-<!--
-POST request
-pass data as stringifed JSON in the body of a POST request to create a new resource
-successful status code of 201
-PUT request
-pass data as stringifed JSON in the body of a PUT request to update an existing resource
-if that resource does not exist, create it
-successful status code of 204
-GET request
-pass ?id=<uuid> as a query string parameter to retrieve a specific resource (as JSON)
-successful status code of 200
-DELETE request
-pass ?id=<uuid> in the query string to DELETE a specific resource
-successful status code of 204 -->
+_Allows you to post a toy with a name and a description to a json file which will be stored in /data/toy._
+_Success status code of 201_
+
+GET http://localhost:3000/api/toy
+_Allows you to get a toy by unique id # from it's saved json file in /data/toy_
+_Success status code of 200_
+
+PUT http://localhost:3000/api/toy
+_Allows you to update a toy's json file which will be stored in /data/toy or create a new one._
+_Success status code of 204_
+
+DELETE http://localhost:3000/api/toy
+_Allows you to delete the toy & it's json file from /data/toy._
+_Success status code of 204_
 
 
 ## Resources I Used:
