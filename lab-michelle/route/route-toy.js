@@ -24,7 +24,7 @@ module.exports = function (router) {
     try {
       let newToy = new Toy(req.body.name, req.body.desc);
       return storage.create('toy', newToy)
-        .then(toy => response.sendJson(res, 201, toy));
+        .then(toy => response(res, 201, toy));
     } catch (e) {
       response.sendText(res, 400, `bad request: ${e.message}`);
     }

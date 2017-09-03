@@ -43,10 +43,6 @@ describe('Testing toy routes', function() {
             expect(this.resPost.status).toBe(201);
           });
         });
-        describe('Invalid Requests', ()=> {
-          test('should return BLAH'); //FINISH
-        });
-      });
       describe('GET requests', () => {
         test('should get the record for toy dir', done => {
           //FILL IN//
@@ -79,9 +75,27 @@ describe('Testing toy routes', function() {
           });
         });
         describe('Invalid Requests', () => {
-
+        });
         });
       });
     });
   });
 });
+
+
+//ASK ABOUT THIS
+//   describe('Invalid Requests', ()=> {
+//     beforeAll(done => {
+//       superagent.post('.3000/api/toy').type('application/json')
+//         .send('error town USA')
+//         .then(res => {
+//           this.mockToy = res.body;
+//           this.resPost = res;
+//           done();
+//         });
+//     test('should return 400, bad request', () => {
+//       expect(this.resPost.status).toBe(400);
+//       expect(this.resPost.status).toContain('bad request');
+//     });
+//   });
+// });
