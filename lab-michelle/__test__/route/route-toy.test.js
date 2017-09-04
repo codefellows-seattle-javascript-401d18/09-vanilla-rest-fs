@@ -1,3 +1,4 @@
+//None of my tests are running properly and I don't really understand why...?//
 'use strict';
 
 const superagent = require('superagent');
@@ -23,97 +24,39 @@ describe('Testing toy routes', function() {
               this.resPost = res;
               done();
             });
-          test('should create a return a new toy, given a valid request', ()=> {
-            expect(this.mockToy).toBeInstanceOf(Object);
-            expect(this.mockToy).toHaveProperty('name');
-            expect(this.mockToy).toHaveProperty('desc');
-            expect(this.mockToy).toHaveProperty('_id');
-          });
-          test('should have a name, given a valid request', () => {
-            expect(this.mockToy.name).toBe('my little pony');
-          });
-          test('should have a desc, given a valid request', () => {
-            expect(this.mockToy.desc).toBe('pink');
-          });
-          test('should have an _id, given a valid request', () => {
-            expect(this.mockToy._id).toHaveProperty('_id');
-            expect(this.mockToy._id).toMatch(/([a-f0-9]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?)/i);
-          });
-          test('should return a 201', () => {
-            expect(this.resPost.status).toBe(201);
-    //       });
-    //     });
-    //   });
-    // });
-    // describe('GET requests', () => {
-    //   describe('Valid requests', () => {
-    //     beforeAll(done => {
-    //       superagent.post('.3000/api/toy').type('application/json')
-    //         .send({
-    //           name: 'top',
-    //           desc: 'spins',
-    //         })
-    //         .then(res => {
-    //           this.mockToy = res.body;
-    //           this.resGet = res;
-    //           done();
-    //         });
-    //       test('should return a 204', done => {
-    //         expect(this.resGet.status).toBe(204);
-    //         done();
-          });
+        });
+        test('should create a return a new toy, given a valid request', ()=> {
+          expect(this.mockToy).toBeInstanceOf(Object);
+          expect(this.mockToy).toHaveProperty('name');
+          expect(this.mockToy).toHaveProperty('desc');
+          expect(this.mockToy).toHaveProperty('_id');
+        });
+        test('should have a name, given a valid request', () => {
+          expect(this.mockToy.name).toBe('my little pony');
+        });
+        test('should have a desc, given a valid request', () => {
+          expect(this.mockToy.desc).toBe('pink');
+        });
+        test('should have an _id, given a valid request', () => {
+          expect(this.mockToy._id).toHaveProperty('_id');
+          expect(this.mockToy._id).toMatch(/([a-f0-9]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?)/i);
+        });
+        test('should return a 201', () => {
+          expect(this.resPost.status).toBe(201);
         });
       });
     });
+    describe('Invalid Requests', ()=> {
+      test('should return 404', ()=> {
+        expect(this.mockToy.name).toBeFalsy();
+        expect(this.resPost.status).toBe(404);
+      }); //FINISH
+    });
+  });
+  describe('GET requests', () => {
+    test('should get the record for toy dir', done => {
+      //FILL IN//
+      done();
+    });
   });
 });
-//         describe('PUT requests', ()=> {
-//           test('should have blah', done => {
-//
-//             done();
-//           });
-//         });
-//         describe('Delete Requests', ()=> {
-//           describe('Valid requests', () => {
-//             beforeAll(done => {
-//               superagent.delete(':3000/api/toy')
-//                 .query({_id: this.mockToy._id})
-//                 .then(res => {
-//                   this.resDelete = res;
-//                   done();
-//                 });
-//             });
-//             test('should remove the record from the toy dir', done => {
-//               fs.readdirProm(`${__dirname}/../../data/toy`)
-//                 .then(files => {
-//                   let expectedFalse = files.includes(`${this.mockToy._id}.json`);
-//                   expect(expectedFalse).toBeFalsy();
-//                   done();
-//                 });
-//             });
-//           });
-//           describe('Invalid Requests', () => {
-//           });
-//         });
-//       });
-//     });
-//   });
-// });
-
-
-//ASK ABOUT THIS
-//   describe('Invalid Requests', ()=> {
-//     beforeAll(done => {
-//       superagent.post('.3000/api/toy').type('application/json')
-//         .send('error town USA')
-//         .then(res => {
-//           this.mockToy = res.body;
-//           this.resPost = res;
-//           done();
-//         });
-//     test('should return 400, bad request', () => {
-//       expect(this.resPost.status).toBe(400);
-//       expect(this.resPost.status).toContain('bad request');
-//     });
-//   });
-// });
