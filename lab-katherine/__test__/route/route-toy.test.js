@@ -1,4 +1,10 @@
-const Promise = require('bluebird')
+'use strict'
+
+require('jest')
+const server = require('../../server')
+const superagent = require('superagent')
+const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'})
+// const bluebird = require('bluebird')
 // const fs = Promise.promisifyAll(requre('fs'), )
 
 describe('testing toy routes', function(){

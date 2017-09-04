@@ -6,6 +6,7 @@ const response = require('../lib/response')
 const debug = require('debug')('http:route-toy')
 
 module.exports = function(router) {
+
   router.post('/api/toy', (req, res) => {
     debug('/api/toy POST')
     try {
@@ -34,27 +35,28 @@ module.exports = function(router) {
     response.sendText(res, 400, 'bad request; item id required to get record')
   })
 
-  // router.put('/api/toy', (req, res) => {
-  //   debug('/api/toy PUT')
-  //   if (req.url.query._id) {
-  //     if(!req.body._id && !req.body.name && !req.body.desc) {
-  //       response.sendJson(res, 400, `bad request: body improperly formatted`)
-  //       return
-  //     }
-  //     storage.update('toy', req.body)
-  //       .then(() => {
-  //         res.writeHead(204, {'Content-Type': 'text/plain'})
-  //         res.end()
-  //         return
-  //       })
-  //       .catch(err => {
-  //         response.sendJson(res, 400, `bad request; ${err.message}`)
-  //         return
-  //       })
-  //     return
-  //   }
-  //   response.sendJson(res, 400, 'bad request; item id required to get record')
-  // })
+  router.put('/api/toy', (req, res) => {
+    debug('/api/toy PUT')
+    if (req.url.query._id) {
+      if(!req.body._id && !req.body.name && !req.body.desc) {
+        response.sendJson(res, 400, `bad request; body improperly formatted`)
+        return
+      }
+      storage.update('toy', req.body)
+        .then(() => {
+          res.writeHead(204, {'Content-Type': 'text/plain'})
+          res.end()
+          return
+        })
+        .catch(err => {
+          res.writeHead(400, {'Content-Type': 'application/json'})
+          res.write(`bad request; ${err.message}`)
+          res.end()
+          return
+        })
+      return
+    }
+  })
 
   router.delete('/api/toy', (req, res) => {
     debug('/api/toy DELETE')
