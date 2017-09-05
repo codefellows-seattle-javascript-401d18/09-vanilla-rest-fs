@@ -3,6 +3,7 @@
 const debug = require('debug')('http:storage');
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
+const Toy = require('../model/toy');
 
 const storage = module.exports = {};
 
@@ -11,12 +12,14 @@ storage.create = function(schema, item) {
 
   return new Promise((resolve, reject) => {
     if(!schema) return reject(new Error('cannot create; schema required'));
-    if(!item) return reject(new Error('cannot create; item required'));
+    if(!item.name || !item.desc) return reject(new Error('cannot create; item required'));
 
-    let json = JSON.stringify(item);
+    let newToy = new Toy(item.name, item.desc);
 
-    return fs.writeFileProm(`${__dirname}/../data/${schema}${item._id}.json`, json)
-      .then(() => resolve(item))
+    let json = JSON.stringify(newToy);
+
+    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json)
+      .then(() => resolve(newToy))
       .catch(reject);
   });
 };

@@ -15,19 +15,21 @@ module.exports = function (router) {
           .then(response(res, 204, 'toy destroyed'));
       }
     } catch (e) {
-      response.sendText(res, 400, 'bad request: cannot delete this stuff');
+      response(res, 400, 'bad request: cannot delete this stuff');
     }
   });
 
   router.post('/api/toy', (req, res) => {
     debug('/api/toy POST');
-    try {
-      let newToy = new Toy(req.body.name, req.body.desc);
-      return storage.create('toy', newToy)
-        .then(toy => response(res, 201, toy));
-    } catch (e) {
-      response.sendText(res, 400, `bad request: ${e.message}`);
-    }
+
+    // try {
+      return storage.create('toy', req.body)
+        .then(toy => response(res, 201, toy))
+        .catch(err => response(res, 400, `bad request: ${err.message}`));
+// )
+//     } catch (e) {
+//       response(res, 400, `bad request: ${e.message}`);
+//     }
   });
 
 
@@ -40,6 +42,7 @@ module.exports = function (router) {
           response(res, 201, toy);
         })
         .catch(err => {
+          console.log(err);
           response(res, 404, 'bad request: could not find record');
         });
       return;
