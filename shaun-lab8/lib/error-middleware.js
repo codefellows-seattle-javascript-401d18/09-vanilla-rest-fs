@@ -3,7 +3,7 @@
 const createError =  require('http-errors');
 const debug = require('debug')('http:error-middleware');
 
-modules.exports = function (err, req, res, next) {
+module.exports = function (err, req, res, next) {
   if(err.status) {
     debug('user error');
     res.status(err.status).send(err.name);

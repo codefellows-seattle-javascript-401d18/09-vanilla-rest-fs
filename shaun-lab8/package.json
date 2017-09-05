@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "start:watch": "nodemon server.js",
+    "start:watch": "nodemon index.js",
     "start:debug": "DEBUG=http* nodemon server.js",
     "test": "jest",
     "test:watch": "jest --watchAll",
