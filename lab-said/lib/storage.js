@@ -33,8 +33,19 @@ storage.fetchOne = function(schema, itemId) {
   });
 };
 
-storage.fetchAll = function() {
+storage.fecthAll = function(schema) {
+  debug('#fetchAll');
 
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('cannot get items; schema required'));
+
+    return fs.readdirProm(`${__dirname}/../data/${schema}`)
+      .then(ids => {
+        let data = Array.prototype.map.call(ids, (id => id.split('.', 1).toString()));
+        return resolve(data);
+      })
+      .catch(reject);
+  });
 };
 
 storage.update = function(schema, item) {
@@ -43,7 +54,9 @@ storage.update = function(schema, item) {
   return new Promise((resolve, reject) => {
     if(!schema) return reject(new Error('cannot update item; schema required'));
     if(!item) return reject(new Error('cannot update item; updated item required'));
-
+    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, JSON.stringify(item))
+      .then(resolve)
+      .catch(reject);
   });
 };
 
