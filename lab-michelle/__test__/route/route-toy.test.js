@@ -3,8 +3,8 @@
 
 const superagent = require('superagent');
 const server = require('../../server');
-const Promise = require('bluebird');
-const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
+// const Promise = require('bluebird');
+// const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
 require('jest');
 
 describe('Testing toy routes', function() {
@@ -47,16 +47,29 @@ describe('Testing toy routes', function() {
       });
     });
     describe('Invalid Requests', ()=> {
+      //no model data here because we want the falsy to work?//
       test('should return 404', ()=> {
         expect(this.mockToy.name).toBeFalsy();
         expect(this.resPost.status).toBe(404);
-      }); //FINISH
+      });
     });
   });
   describe('GET requests', () => {
-    test('should get the record for toy dir', done => {
-      //FILL IN//
-      done();
+    beforeAll(done => {
+      superagent.post('.3000/api/toy').type('application/json')
+        .send({
+          name: 'bob',
+          desc: 'fuzzy bear',
+        })
+        .then(res => {
+          this.mockToy = res.body;
+          this.resGet = res;
+          done();
+        });
+      test('should get the record for toy dir', done => {
+        expect(this.mockToy.name).toBe('bob');
+        done();
+      });
     });
   });
 });
