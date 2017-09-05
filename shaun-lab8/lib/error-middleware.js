@@ -1,7 +1,17 @@
 'use strict';
 
-modules.exports = function (req, res, next) {
-  res.append('Allow-Access-Control-Origin', '*');
-  res.append('Allow-Access-Control-Headers', '*');
+const createError =  require('http-errors');
+const debug = require('debug')('http:error-middleware');
+
+modules.exports = function (err, req, res, next) {
+  if(err.status) {
+    debug('user error');
+    res.status(err.status).send(err.name);
+    next();
+    return;
+  }
+  debug('server error');
+  err = createError(500, err.message);
+  res.status(err.status).send(err.name);
   next();
 };
