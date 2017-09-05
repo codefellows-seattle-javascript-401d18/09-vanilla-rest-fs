@@ -47,19 +47,15 @@ storage.update = function(schema, item) {
   });
 };
 
-// storage.delete = function(schema, itemId) {
-//   debug('#fetchOne');
-//   return new Promise((resolve, reject) => {
-//     if(!schema) return reject(new Error('cannot get item; schema required'));
-//     if(!itemId) return reject(new Error('cannon get item; itemId required'));
-//
-//     return fs.unlink(`${__dirname}/../data/${schema}/${itemId}.json`)
-//       .then(resolve())
-//       .catch(err => {
-//         console.error(err);
-//         return err;
-//       });
-//   });
-//
-// return Promise.reject(new Error('item not found'));
-// });
+storage.delete = function(schema, itemId) {
+  debug('#destroy');
+
+  return new Promise((resolve, reject) => {
+    if(!schema) return reject(new Error('cannot delete item; schema required'));
+    if(!itemId) return reject(new Error('cannot delete item; itemId required'));
+
+    return fs.unlinkProm(`${__dirname}/../data/${schema}/${itemId}.json`)
+      .then(resolve)
+      .catch(reject);
+  });
+};
