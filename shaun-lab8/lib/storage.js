@@ -2,6 +2,8 @@
 'use strict';
 
 const debug = require('debug')('http:storage');
+const createError = require('http-errors');
+const Toy = require('../model/toy');
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
 
@@ -9,19 +11,20 @@ const storage = module.exports = {};
 
 
 storage.create = function(schema, item) {
-  debug('#storage.create');
+  debug('#create');
   // debugger
   return new Promise(function(resolve, reject) {
     if(!schema) return reject(new Error('cannot create; schema required'));
     if(!item) return reject(new Error('cannot create; item required'));
 
-    let json = JSON.stringify(item);
+    let toy = new Toy(item.name, item.desc);
 
-    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json)
+    return fs.writeFileProm(`${__dirname}/../data/toy/${toy._id}.json`, JSON.stringify(toy))
       .then(() => resolve(item))
-      .catch(console.error);
+      .catch(reject);
   });
 };
+
 
 storage.update = function(schema, item) {
   debug('#storage.update');
@@ -29,13 +32,13 @@ storage.update = function(schema, item) {
     if(!schema) return reject(new Error('cannot update; schema required'));
     if(!item) return reject(new Error('cannot update; item required'));
 
-    let json = JSON.stringify(item);
 
-    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json)
-      .then(() => resolve(item))
-      .catch(console.error);
+    return fs.writeFileProm(`${__dirname}/../data/toy/${item._id}.json`, JSON.stringify(item))
+      .then(resolve)
+      .catch(reject);
   });
 };
+
 
 
 storage.fetchOne = function(schema, itemId) {
@@ -53,64 +56,46 @@ storage.fetchOne = function(schema, itemId) {
   });
 };
 
-
-storage.remove = function(schema, itemId) {
-  debug('#storage.remove');
+storage.fetchAll = function(schema) {
+  debug('#fetchAll');
   return new Promise((resolve, reject) => {
     if(!schema) return reject(new Error('cannot get item; schema required'));
-    if(!itemId) return reject(new Error('cannon get item; itemId required'));
 
-    return fs.unlinkProm(`${__dirname}/../data/${schema}/${itemId}.json`)
-      .then(resolve('Item deleted.'))
-      .catch(err => {
-        console.error(err);
-        //return err;
-      });
+    return fs.readFileProm(`${__dirname}/../data/${schema}`)
+      .then(ids => {
+        let data = Array.prototype.map.call(ids, (id => id.split('.', 1).toString()));
+        return resolve(data);
+      })      // console.error(err);
+      .catch(reject);
   });
 };
 
-
-storage.fetchOne = function(schema, itemId) {
+storage.fetchOne = function(itemId) {
+  debug('#fetchOne');
   return new Promise((resolve, reject) => {
-    console.log('here');
-    if(!schema) return reject(new Error('cannot get item; schema required'));
-    if(!itemId) return reject(new Error('cannon get item; itemId required'));
-    return fs.readFileProm(`${__dirname}/../data/${schema}/${itemId}.json`)
-      .then(buff => resolve(JSON.parse(buff.toString())))
-      .catch(err => {
-        // console.error(err);
-        return reject(err);
-      });
+    if(!itemIdea) return reject(new Error('cannot get item; itemID required'));
+
+    return fs.readFileProm(`${__dirname}/../data/toy/${itemId}.json`)
+      .then(buff => {
+        try {
+          let toy = JSON.parse(buff.toString());
+          return resolve(toy);
+        } catch(e) {
+          return reject(e);
+        }
+      })
+      .catch(reject);
   });
 };
 
 storage.delete = function(schema, itemId) {
+  debug('#delete');
   return new Promise((resolve, reject) => {
-    debug('#delete');
     if(!schema) return reject(new Error('cannot create; schema required'));
     if(!itemId) return reject(new Error('cannot create; item required'));
 
-    if (itemId){
-
-      fs.unlinkProm(`${__dirname}/../data/${schema}/${itemId}.json`)
-        .then(() => {
-          resolve(itemId);
-        })
-        .catch((err) => {
-          return reject(err);
-        });
-    }
+    return fs.unlinkProm(`${__dirname}/../data/${schema}/${itemId}.json`)
+      .then(resolve)
+      .catch(reject); 
   });
-};
-
-storage.put = function(schema, id, req) {
-  debug('#delete');
-  if(!schema) return Promise.reject(new Error('cannot update; schema required'));
-  if(!id) return Promise.reject(new Error('cannot update; id required'));
-
-  if(req){
-    fs.writeFileProm(`${__dirname}/../data/${schema}/${id}.json`, req);
-    return Promise.resolve(req);
-  }
-
 };
