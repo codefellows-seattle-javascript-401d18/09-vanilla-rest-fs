@@ -28,7 +28,7 @@ module.exports = function(router) {
         })
         .catch(err => {
           console.error(err)
-          response.sendText(res, 400, `bad request; could not find record, ${err.message}`)
+          response.sendText(res, 404, `bad request; could not find record, ${err.message}`)
         })
       return
     }
