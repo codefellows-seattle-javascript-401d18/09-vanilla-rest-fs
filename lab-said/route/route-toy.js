@@ -36,7 +36,7 @@ module.exports = function(router) {
       return;
     }
 
-    res.writeHead(400, {'Content-Type': 'text/plain'});
+    res.writeHead(404, {'Content-Type': 'text/plain'});
     res.write('bad request; item id required to get record');
     res.end();
   });
@@ -76,13 +76,13 @@ module.exports = function(router) {
     if(req.url.query._id) {
       storage.delete('toy', req.url.query._id)
         .then(() => {
-          res.writeHead(200, {'Content-Type': 'application/json'});
+          res.writeHead(204, {'Content-Type': 'application/json'});
           res.write('bad request; could not find record');
           res.end();
         })
         .catch(err => {
           console.error(err);
-          res.writeHead(400, {'Content-Type': 'text/plain'});
+          res.writeHead(404, {'Content-Type': 'text/plain'});
           res.write('bad request; could not find record');
           res.end();
         });
