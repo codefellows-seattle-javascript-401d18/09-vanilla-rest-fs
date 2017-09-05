@@ -6,6 +6,7 @@ const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
 require('jest');
 
+// qouted from the licture! still so confused about test constructing!!
 describe('Testing toy routes', function() {
   afterAll(done => server.close(done));
 
