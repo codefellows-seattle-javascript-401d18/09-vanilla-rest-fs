@@ -108,7 +108,6 @@ describe('testing toy routes', function(){
           })
           .then(res => {
             this.mockToy = res.body
-            console.log(res.body)
             expect(res.status).toBe(201)
             expect(this.mockToy.name).toBe('barney')
             expect(this.mockToy.desc).toBe('purple dino')
@@ -139,10 +138,10 @@ describe('testing toy routes', function(){
           })
         done()
       })
-      xtest('200 should contain a response body for a request made with a valid id', done => {
+      test('200 should contain a response body for a request made with a valid id', done => {
         superagent.get(':3000/api/toy')
-          .query({'_id': '0c6ecde2-513c-4956-b681-95afa785b973'})
           .type('application/json')
+          .query({'_id': 'aaab23a2-a5c1-4e77-b740-bb9e48da436e'})
           .then(res => {
             expect(res.body.name).toEqual('barney')
             expect(res.body.desc).toEqual('purple dino')
@@ -154,17 +153,64 @@ describe('testing toy routes', function(){
     })
 
     describe('#PUT method', () => {
-      test('400 should respond with "bad request" if no request body was provided or the body was invalid'), done => {
+      test('400 should respond with "bad request" if no request body was provided or the body was invalid', done => {
         superagent.put(':3000/api/toy')
-          .query({'_id': '0c6ecde2-513c-4956-b681-95afa785b973'})
-          .type('application/json')
-          .send({})
+          .type('text/plain')
+          .query({'_id': ''})
           .then(res => {
             expect(res.status).toEqual(400)
             done()
           })
         done()
-      }
+      })
+      test('204 should respond with no body content for a put request with a valid body', done => {
+        superagent.put(':3000/api/toy')
+          .query({'_id': '50d053d1-df2c-4101-b07b-09a6b546e848'})
+          .send({
+            'name': 'better barney',
+            'desc': 'better purple dino',
+            '_id': '50d053d1-df2c-4101-b07b-09a6b546e848'
+          })
+          .type('application/json')
+          .then(res => {
+            expect(res.status).toEqual(204)
+            done()
+          })
+        done()
+      })
+    })
+
+    describe('#DELETE method', () => {
+      test('400 should respond with "bad request" if no resource id was provided', done => {
+        superagent.delete(':3000/api/toy')
+          .type('text/plain')
+          .query({'_id': ''})
+          .then(res => {
+            expect(res.status).toEqual(400)
+            done()
+          })
+        done()
+      })
+      test('404 should respond with "not found" for valid requests made with an id that was not found', done => {
+        superagent.delete(':3000/api/toy')
+          .type('text/plain')
+          .query({'_id': '5885'})
+          .then(res => {
+            expect(res.status).toEqual(404)
+            done()
+          })
+        done()
+      })
+      test('204 should respond with no body content for a request request with a valid resource id', done => {
+        superagent.delete(':3000/api/toy')
+          .type('text/plain')
+          .query({'_id': '8034ccf9-9bfd-4ffb-877c-cf159fdbedcd'})
+          .then(res => {
+            expect(res.status).toEqual(204)
+            done()
+          })
+        done()
+      })
     })
   })
 })
