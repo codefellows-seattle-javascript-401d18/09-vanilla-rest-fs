@@ -1,4 +1,3 @@
-
 'use strict';
 
 // const debug = require('debug')('http:server');
@@ -12,7 +11,7 @@ const app = module.exports = express();
 // middleware
 const bodyParser = require('body-parser').json();
 const cors = require('./cors');
-const errorMiddleware = require('./error-middleware');
+const errorMiddleware = require('../lib/error-middleware');
 
 // routes
 require('../route/route-toy')(router);
@@ -25,4 +24,5 @@ app.use(cors);
 app.use(router);
 // this should always be last to catch any errors within the callback chain
 app.use(errorMiddleware);
+
 app.all('/*', (req, res) => res.sendStatus(404));
