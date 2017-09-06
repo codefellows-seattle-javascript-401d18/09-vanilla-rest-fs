@@ -57,30 +57,31 @@ describe('Testing toy routes', function() {
         superagent.get(':3000/api/toy')
           .query({_id: this.mockToy._id})
           .then(res => {
-            this.resGst = res;
-            expect(this.mockToy).toBeInstanceOf(Object);
-            expect(this.mockToy).toHaveProperty('name');
-            expect(this.mockToy).toHaveProperty('desc');
-            expect(this.mockToy).toHaveProperty('_id');
+            this.resGet = res.body;
+            this.resGet.status = res.status;
+            expect(this.resGet).toBeInstanceOf(Object);
+            expect(this.resGet).toHaveProperty('name');
+            expect(this.resGet).toHaveProperty('desc');
+            expect(this.resGet).toHaveProperty('_id');
             done();
           });
       });
 
       test('should have a name, given a valid request', (done) => {
-        expect(this.mockToy.name).toBe('barney');
+        expect(this.resGet.name).toBe('barney');
         done();
       });
       test('should have a desc, given a valid request', (done) => {
-        expect(this.mockToy.desc).toBe('purple dino');
+        expect(this.resGet.desc).toBe('purple dino');
         done();
       });
       test('should have an _id, given a valid request', (done) => {
-        expect(this.mockToy).toHaveProperty('_id');
-        expect(this.mockToy._id).toMatch(/([a-f0-9]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?)/i);
+        expect(this.resGet).toHaveProperty('_id');
+        expect(this.resGet._id).toMatch(/([a-f0-9]{8}(-[a-f\d]{4}){3}-[a-f\d]{12}?)/i);
         done();
       });
-      test('should return a 201 CREATED, given a valid request', (done) => {
-        expect(this.resPost.status).toBe(201);
+      test('should return a 200 CREATED, given a valid request', (done) => {
+        expect(this.resGet.status).toBe(200);
 
         done();
       });
