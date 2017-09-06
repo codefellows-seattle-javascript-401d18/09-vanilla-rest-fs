@@ -71,7 +71,7 @@ module.exports = function(router) {
   });
 
 
-  router.delete('/api/data/toy', (req, res) => {
+  router.delete('/api/toy', (req, res) => {
     debug('/api/data/toy DELETE');
     if(req.url.query._id) {
       storage.delete('toy', req.url.query._id)
