@@ -1,10 +1,10 @@
 
 'use strict';
 
-const debug = require('debug')('http:server');
+// const debug = require('debug')('http:server');
 
 // express setup
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 const express = require('express');
 const router = express.Router();
 const app = module.exports = express();
@@ -25,3 +25,4 @@ app.use(cors);
 app.use(router);
 // this should always be last to catch any errors within the callback chain
 app.use(errorMiddleware);
+app.all('/*', (req, res) => res.sendStatus(404));
