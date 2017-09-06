@@ -44,7 +44,7 @@ describe('Testing toy routes', function() {
         });
       });
       describe('Invalid Requests', () => {
-        test.only('should return 404', done => {
+        test('should return 404', done => {
           superagent.post(':3000/api/toy')
             .type('application/json')
             .send({})
@@ -55,25 +55,81 @@ describe('Testing toy routes', function() {
 
         });
       });
-// });
-describe('GET requests', () => {
-  beforeAll(done => {
-    superagent.post('.3000/api/toy').type('application/json')
-      .send({
-        name: 'bob',
-        desc: 'fuzzy bear',
-      })
-      .then(res => {
-        this.mockToy = res.body;
-        this.resGet = res;
-        done();
+    });
+    describe('GET request tests', () => {
+      describe('Valid requests', () => {
+        test('should create and return a new toy, given a valid request', done => {
+          superagent.get(':3000/api/toy')
+            .type('application/json')
+            .send({
+              name: 'bobbert',
+              desc: 'fuzzy bear',
+            })
+            .then(res => {
+              this.mockToy = res.body;
+              this.resPost = res;
+              expect(this.mockToy).toBeInstanceOf(Object);
+              expect(this.mockToy).toHaveProperty('name');
+              expect(this.mockToy).toHaveProperty('desc');
+              expect(this.mockToy).toHaveProperty('_id');
+              done();
+            });
+        });
+        test('should have a name in the response, given a valid request', () => {
+          expect(mockToy.name).toBe('bobbert');
+        });
+        test('should have a desc, given a valid request', () => {
+          expect(this.mockToy.desc).toBe('pink');
+        });
       });
-    test('should get the record for toy dir', done => {
-      expect(this.mockToy.name).toBe('bob');
-      done();
+    });
+  });
+      describe('GET requests', ()=> {
+        describe('Valid requests', () => {
+          beforeAll(done => {
+            superagent.get(':3000/api/toy')
+              .query({_id: this.mockToy._id})
+              .then(res => {
+                this.resGet = res;
+                expect(this.mockToy).toBeInstanceOf(Object);
+                expect(this.mockToy).toHaveProperty('name');
+                expect(this.mockToy).toHaveProperty('desc');
+                expect(this.mockToy).toHaveProperty('_id');
+                done();
+              });
+          });
+          test('should get the record from the toy dir', done => {
+            fs.readdirProm(`${__dirname}/../../data/toy`)
+              .then(files => {
+                let expectedFalse = files.includes(`${this.mockToy._id}.json`);
+                expect(expectedFalse).toBeFalsy();
+                console.log(expectedFalse);
+                done();
+      });
     });
   });
 });
-});
-});
+      describe('DELETE requests', ()=> {
+        describe('Valid requests', () => {
+          beforeAll(done => {
+            superagent.delete(':3000/api/toy')
+              .query({_id: this.mockToy._id})
+              .then(res => {
+                this.resDelete = res;
+                done();
+              });
+          });
+          test('should remove the record from the toy dir', done => {
+            fs.readdirProm(`${__dirname}/../../data/toy`)
+              .then(files => {
+                let expectedFalse = files.includes(`${this.mockToy._id}.json`);
+                expect(expectedFalse).toBeFalsy();
+                console.log(expectedFalse);
+                done();
+              });
+          });
+        });
+      });
+    });
+  });
 });

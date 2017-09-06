@@ -18,7 +18,7 @@ storage.create = function(schema, item) {
 
     let json = JSON.stringify(newToy);
 
-    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json)
+    return fs.writeFileProm(`${__dirname}/../data/${schema}/${newToy._id}.json`, json)
       .then(() => resolve(newToy))
       .catch(reject);
   });
