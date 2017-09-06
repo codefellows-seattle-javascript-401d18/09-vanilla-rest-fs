@@ -11,6 +11,7 @@ The app was built using HTTPie and the npm package uuid. The app was tested usin
 https://httpie.org/doc
 https://www.npmjs.com/package/uuid
 https://www.npmjs.com/package/jest
+http://bluebirdjs.com/docs/getting-started.html
 
 define how another dev can 'get started' with your api on their own
 
