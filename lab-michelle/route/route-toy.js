@@ -7,33 +7,18 @@ const debug = require('debug')('http:route-toy');
 
 module.exports = function (router) {
 
-  router.delete('/api/toy', (req, res) => {
-    debug('/api/data DELETE');
-    try {
-      if(req.url.query._id) {
-        return storage.destroy('toy', req.url.query._id)
-          .then(response(res, 204, 'toy destroyed'));
-      }
-    } catch (e) {
-      response(res, 400, 'bad request: cannot delete this stuff');
-    }
-  });
-
   router.post('/api/toy', (req, res) => {
     debug('/api/toy POST');
 
-    // try {
+    try {
+      let newToy = new Toy(req.body.name, req.body.desc);
       return storage.create('toy', req.body)
-        .then(toy => response(res, 201, toy))
-        .catch(err => response(res, 400, `bad request: ${err.message}`));
-// )
-//     } catch (e) {
-//       response(res, 400, `bad request: ${e.message}`);
-//     }
+        .then(toy => response(res, 201, toy));
+    } catch(err) {
+      response(res, 400, `bad request: could not create toy`);
+    }
   });
 
-
-  //May need to update//
   router.get('/api/toy', (req, res) => {
     debug('/api/toy GET');
     if (req.url.query._id) {
@@ -41,12 +26,11 @@ module.exports = function (router) {
         .then(toy => {
           response(res, 201, toy);
         })
-        .catch(err => {
-          console.log(err);
-          response(res, 404, 'bad request: could not find record');
-        });
-      return;
+        .catch(err => response(res, 400, err.message));
     }
+    return storage.fetchAll('toy')
+      .then(ids => response(res, 200, ids))
+      .catch(err => response(res, 404, err.message));
   });
 
   router.put('/api/toy', (req, res) => {
@@ -54,15 +38,27 @@ module.exports = function (router) {
     if (!req.url.query._id) {
       try {
         let newToy = new Toy(req.body.name, req.body.desc);
+
         return storage.create('toy', newToy)
-          .then(response(res, 400, 'toy creeated'));
+          .then(toy => response(res, 201, toy));
       } catch(e) {
         response(res, 400, 'bad request: cannot update toy');
       }
       return;
     }
     return storage.update('toy', req.body)
-      .then(response(res, 204, 'toy updated'))
+      .then(() => response(res, 204))
       .catch(err => response(res, 400, err.message));
+  });
+
+  router.delete('/api/toy', (req, res) => {
+    debug('/api/data DELETE');
+
+    if(req.url.query._id) {
+      return storage.destroy('toy', req.url.query._id)
+        .then(response(() => 204))
+        .catch(err => response(res, 400, err.message));
+    }
+    response(res, 400, 'bad request: could not delete resource');
   });
 };

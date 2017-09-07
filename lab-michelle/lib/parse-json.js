@@ -9,12 +9,12 @@ module.exports = function(req) {
       let body = '';
 
       req.on('data', buff => body += buff.toString());
+      req.on('error', reject);
       req.on('end', () => {
         try {
           req.body = JSON.parse(body);
           resolve(req);
         } catch(e) {
-          // console.error(e);
           reject(e);
         }
       });
