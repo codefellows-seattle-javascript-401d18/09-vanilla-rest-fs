@@ -1,5 +1,5 @@
 # *VanillaJS*
-# Servering the best Vanilla JavaScript around.
+# NOW WITH SAVABILITY
 
 # Server request and response demonstration.
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
@@ -36,9 +36,9 @@ Using node.js, HTTP, superagent, cowsay, and querystring I have created a Server
   ## These are the only variations of this API and endpoints.
   ### Any other requests will come back 404.
   ### Examples of bad endpoints
-  `http GET localhost:3000/api/toy/PowerRanger`
+  `http GET localhost:3000/api/toy/GIJoe`
 
-  `http GET localhost:3000/toy/api/PowerRanger`
+  `http GET localhost:3000/toy/api/GIJoe`
 
   `http GET localhost:3000/api/toy/`
   ### GET requests
@@ -47,11 +47,11 @@ Using node.js, HTTP, superagent, cowsay, and querystring I have created a Server
 
   ### POST requests
   + Example ==>`http POST localhost:3000/api/toy name=name desc=desc`
-  + Example w/ Mock ID ==> `http POST localhost:3000/api/toy name=PowerRanger desc='Super Awesome Red Ranger'`
+  + Example w/ Mock ID ==> `http POST localhost:3000/api/toy name=GIJoe desc='CobraCommander'`
 
   ### PUT requests
   + Example ==>`http PUT localhost:3000/api/toy?_id='someid name=new name desc=new desc'`
-  + Example w/ Mock ID ==> `http PUT localhost:3000/api/toy?_id='96d6514b-b1da-4a11-a8a7-b044436a23ab' name=PowerRangerGreen desc=Totally awesome Green Ranger`
+  + Example w/ Mock ID ==> `http PUT localhost:3000/api/toy?_id='96d6514b-b1da-4a11-a8a7-b044436a23ab' name=GI JOE desc=Snakeeyes`
 
   ### DELETE requests
   + Example`http DELETE localhost:3000/api/toy?_id='some Id'` will return 404.
