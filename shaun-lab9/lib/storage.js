@@ -1,86 +1,75 @@
 'use strict';
 
 const debug = require('debug')('http:storage');
-const createError = require('http-errors');
-const Toy = require('../model/toy');
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'), {suffix: 'Prom'});
 
+
+
 const storage = module.exports = {};
 
-storage.create = function(item) {
+
+
+storage.create = function(schema, item) {
   debug('#create');
-
-
+  // debugger
   return new Promise((resolve, reject) => {
-    // if(!schema) return reject(new Error('cannot create; schema required'))
-    if(!item.name) return reject(createError(400, 'cannot create; name required'));
-    if(!item.desc) return reject(createError(400, 'cannot create; desc required'));
+    if(!schema) return reject(new Error('cannot create; schema required'));
+    if(!item) return reject(new Error('cannot create; item required'));
 
-    let toy = new Toy(item.name, item.desc);
+    let json = JSON.stringify(item);
 
-    return fs.writeFileProm(`${__dirname}/../data/toy/${toy._id}.json`, JSON.stringify(toy))
-      .then(() => resolve(toy))
+    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json)
+      .then(() => resolve(item))
       .catch(reject);
   });
 };
 
-storage.fetchOne = function(itemId) {
-  debug('#fetchOne');
 
+storage.fetchOne = function(schema, itemId) {
   return new Promise((resolve, reject) => {
-    // if(!schema) return reject(new Error('cannot get item; schema required'))
-    if(!itemId) return reject(createError(400, 'cannot get item; itemId required'));
-
-    return fs.readFileProm(`${__dirname}/../data/toy/${itemId}.json`)
-      .then(buff => {
-        try {
-          let toy = JSON.parse(buff.toString());
-          return resolve(toy);
-        } catch(e) {
-          return reject(e);
-        }
-      })
-      .catch(reject);
+    console.log('here');
+    if(!schema) return reject(new Error('cannot get item; schema required'));
+    if(!itemId) return reject(new Error('cannon get item; itemId required'));
+    return fs.readFileProm(`${__dirname}/../data/${schema}/${itemId}.json`)
+      .then(buff => resolve(JSON.parse(buff.toString())))
+      .catch(err => {
+        // console.error(err);
+        return reject(err);
+      });
   });
 };
 
-storage.fetchAll = function(schema) {
-  debug('#fetchAll');
-
-
+storage.delete = function(schema, itemId) {
   return new Promise((resolve, reject) => {
+    debug('#delete');
+    if(!schema) return reject(new Error('cannot create; schema required'));
+    if(!itemId) return reject(new Error('cannot create; item required'));
 
-    return fs.readdirProm(`${__dirname}/../data/toy`)
-      .then(filePaths => {
-        let data = Array.prototype.map.call(filePaths, (id => id.split('.', 1).toString()));
-        return resolve(data);
-      })
-      .catch(reject);
+    if (itemId){
+
+      fs.unlinkProm(`${__dirname}/../data/${schema}/${itemId}.json`)
+        .then(() => {
+          resolve(itemId);
+        })
+        .catch((err) => {
+          return reject(err);
+        });
+    }
   });
 };
 
-storage.update = function(schema, item, itemId) {
-  debug('#update');
 
-  return new Promise((resolve, reject) => {
+storage.put = function(schema, item) {
+  debug('#storage.update');
+  return new Promise(function(resolve, reject) {
     if(!schema) return reject(new Error('cannot update; schema required'));
     if(!item) return reject(new Error('cannot update; item required'));
-    item._id = itemId;
-    return fs.writeFileProm(`${__dirname}/../data/${schema}/${itemId}.json`, JSON.stringify(item))
-      .then(resolve)
-      .catch(reject);
-  });
-};
 
-storage.destroy = function(itemId) {
-  debug('#destroy');
+    let json = JSON.stringify(item);
 
-  return new Promise((resolve, reject) => {
-    if(!itemId) return reject(createError(400, 'cannot delete item; itemId required'));
-
-    return fs.unlinkProm(`${__dirname}/../data/toy/${itemId}.json`)
-      .then(resolve)
-      .catch(reject);
+    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json)
+      .then(() => resolve(json))
+      .catch(console.error);
   });
 };
