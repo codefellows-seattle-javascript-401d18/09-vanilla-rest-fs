@@ -1,51 +1,72 @@
 'use strict';
-const storage = require('../lib/storage');
+
 const debug = require('debug')('http:route-toy');
-const createError = require('http-errors');
+const Toy = require('../model/toy');
+const storage = require('../lib/storage');
+const response = require('../lib/response');
 
 module.exports = function(router) {
-  router.post('/api/toy', (req, res, next) => {
+  //Post
+  router.post('/api/toy', (req, res) => {
     debug('/api/toy POST');
-
-    return storage.create(req.body)
-      .then(toy => res.status(201).send(toy))
-      .catch(err => next(err));
-  });
-
-  router.get('/api/toy/:_id', (req, res, next) => {
-    debug('/api/toy/:_id GET');
-    if (!req.params._id){
-      err.status;
+    if (!req.body.name || !req.body.desc){
+      response.sendText(res, 400, `Bad Request, must have name and desc`);
+      return;
     }
-    return storage.fetchOne(req.params._id)
-      .then(toy => res.json(toy))
-      .catch(next);
-
+    try {
+      let newToy = new Toy(req.body.name, req.body.desc);
+      storage.create('toy', newToy)
+        .then(toy => response.sendJson(res, 201, toy));
+    } catch(e) {
+      response.sendText(res, 400, `Bad Request: ${e.message}`);
+    }
   });
-
-  router.get('/api/toy', (req, res, next) => {
+  //GET
+  router.get('/api/toy', (req, res) => {
     debug('/api/toy GET');
-    return storage.fetchAll('toy')
-      .then(data => res.json(data))
-      .catch(next);
+    if(req.url.query._id) {
+      storage.fetchOne('toy', req.url.query._id)
+        .then(toy => response.sendJson(res, 200, toy))
+        .catch(err => {
+          console.error(err);
+          response.sendText(res, 400, `Bad Request, Couldn't find record`);
 
+        });
+      return;
+    }
+    response.sendText(res, 400, `Bad Request, couldn't find record`);
   });
 
-  router.put('/api/toy/:_id', (req, res, next) => {
-    debug('/api/toy PUT');
-
-    return storage.update(req.body, req.params._id)
-      .then(() => res.status(204))
-      .catch(next);
-  });
-
-  router.delete('/api/toy/:_id', (req, res, next) => {
+  //DELETE
+  router.delete('/api/toy', (req, res) => {
     debug('/api/toy DELETE');
-
-    return storage.destroy('toy', req.params._id)
-      .then(() => res.status(204).json('yay'))
-      .catch(err => createError(err.status, err.message), next);
-
-
+    if(!req.url.query._id){
+      response.sendText(res, 404, `Error, Improper format for DELETE`);
+      return ;
+    }
+    storage.delete('toy', req.url.query._id)
+      .then(toy => {
+        response.sendText(res, 204, `Deleted Record + ${toy}`);
+      })
+      .catch(err => {
+        console.error(err);
+        response.sendText(res, 404, `Bad Request, couldn't find record`);
+      });
+    return;
+  });
+  //PUT
+  router.put('/api/toy', (req, res) => {
+    debug('/api/toy PUT');
+    if(!req.url.query._id){
+      response.sendText(res, 400, `Error, No ID exists`);
+      return;
+    }
+    let updateToy = req.body;
+    storage.put('toy', updateToy)
+      .then(toy => response.sendJson(res, 204, toy))
+      .catch(err => {
+        console.error(err);
+        response.sendText(res, 400, `bad request: ${err.message}`);
+      });
   });
 };
