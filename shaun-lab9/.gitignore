@@ -1,5 +1,8 @@
 # Created by https://www.gitignore.io/api/osx,linux,node,vim
 
+db/
+build/
+
 ### OSX ###
 .DS_Store
 .AppleDouble
@@ -23,6 +26,7 @@
 logs
 *.log
 npm-debug.log*
+.tern-project
 
 # Runtime data
 pids
