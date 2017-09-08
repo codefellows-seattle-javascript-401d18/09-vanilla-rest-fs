@@ -11,7 +11,6 @@ module.exports = function (router) {
     debug('/api/toy POST');
 
     try {
-      let newToy = new Toy(req.body.name, req.body.desc);
       return storage.create('toy', req.body)
         .then(toy => response(res, 201, toy));
     } catch(err) {
@@ -22,11 +21,13 @@ module.exports = function (router) {
   router.get('/api/toy', (req, res) => {
     debug('/api/toy GET');
     if (req.url.query._id) {
-      storage.fetchOne('toy', req.url.query._id)
+      return storage.fetchOne('toy', req.url.query._id)
         .then(toy => {
-          response(res, 201, toy);
+          return response(res, 200, toy);
         })
-        .catch(err => response(res, 400, err.message));
+        .catch(err =>  {
+          return response(res, 404, err.message);
+        });
     }
     return storage.fetchAll('toy')
       .then(ids => response(res, 200, ids))
@@ -36,17 +37,11 @@ module.exports = function (router) {
   router.put('/api/toy', (req, res) => {
     debug ('/api/toy PUT');
     if (!req.url.query._id) {
-      try {
-        let newToy = new Toy(req.body.name, req.body.desc);
-
-        return storage.create('toy', newToy)
-          .then(toy => response(res, 201, toy));
-      } catch(e) {
-        response(res, 400, 'bad request: cannot update toy');
-      }
-      return;
+      return storage.create('toy', req.body)
+        .then(toy => response(res, 201, toy))
+        .catch(() => response(res, 400, 'bad request: cannot update toy'));
     }
-    return storage.update('toy', req.body)
+    return storage.update('toy', req.body, req.url.query._id)
       .then(() => response(res, 204))
       .catch(err => response(res, 400, err.message));
   });
@@ -56,8 +51,8 @@ module.exports = function (router) {
 
     if(req.url.query._id) {
       return storage.destroy('toy', req.url.query._id)
-        .then(response(() => 204))
-        .catch(err => response(res, 400, err.message));
+        .then(() => response(res, 204))
+        .catch(err => response(res, 404, err.message));
     }
     response(res, 400, 'bad request: could not delete resource');
   });

@@ -12,7 +12,7 @@ module.exports = function(res, status, data) {
     res.end();
   } catch(e) {
     debug('#Text version response');
-    res.write(status, {'Content-Type': 'text/plain'});
+    res.writeHead(status, {'Content-Type': 'text/plain'});
     res.write(data);
     res.end();
   }

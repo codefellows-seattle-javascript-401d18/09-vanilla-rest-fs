@@ -12,7 +12,7 @@ storage.create = function(schema, item) {
 
   return new Promise((resolve, reject) => {
     if(!schema) return reject(new Error('cannot create; schema required'));
-    if(!item.name || !item.desc) return reject(new Error('cannot create; item required'));
+    if(!item) return reject(new Error('cannot create; item required'));
 
     let newToy = new Toy(item.name, item.desc);
 
@@ -32,17 +32,32 @@ storage.fetchOne = function(schema, itemId) {
     if(!itemId) return reject(new Error('cannot get item; item id required'));
 
     return fs.readFileProm(`${__dirname}/../data/${schema}/${itemId}.json`)
-      .then(buff => {
-        try {
-          resolve(JSON.parse(buff.toString()));
-          return resolve(toy);
-        } catch(e) {
-          return reject(e);
-        }
-      })
-      .catch(reject);
+      .then(buff => resolve(JSON.parse(buff.toString())))
+      .catch(err => {
+        return reject(err);
+      });
   });
 };
+//
+//
+// storage.fetchOne = function(schema, itemId) {
+//   debug('#fetchOne')
+//
+//   return new Promise((resolve, reject) => {
+//     if(!schema) return reject(new Error('cannot get item; schema required'))
+//     if(!itemId) return reject(new Error('cannot get item; itemId required'))
+//
+//     return fs.readFileProm(`${__dirname}/../data/${schema}/${itemId}.json`)
+//     .then(buff => {
+//       try {
+//         let toy = JSON.parse(buff.toString())
+//         return resolve(toy)
+//       } catch(e) {
+//         return reject(e)
+//       }
+//     })
+//     .catch(reject)
+//   })
 
 storage.fetchAll = function(schema) {
   debug('#fetchAll');
@@ -66,14 +81,14 @@ storage.update = function(schema, item) {
     if(!schema) return reject(new Error('cannot update: schema required'));
     if(!item) return reject (new Error('cannot update: item required'));
 
-    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, JSON.stringify())
+    return fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, JSON.stringify(item))
       .then(resolve)
       .catch(reject);
   });
 };
 
-storage.delete = function(schema, itemId) {
-  debug('#storage delete');
+storage.destroy = function(schema, itemId) {
+  debug('#storage destroy');
 
   return new Promise((resolve, reject) => {
     if (!schema) return reject(new Error('cannot delete item: schema required'));
