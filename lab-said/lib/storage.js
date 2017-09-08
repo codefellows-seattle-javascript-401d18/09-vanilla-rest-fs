@@ -14,7 +14,7 @@ storage.create = function(schema, item) {
     let json = JSON.stringify(item);
     return    fs.writeFileProm(`${__dirname}/../data/${schema}/${item._id}.json`, json)
       .then(() => resolve(item))
-      .catch(console.error);
+      .catch(reject);
   });
 };
 
@@ -28,12 +28,12 @@ storage.fetchOne = function(schema, itemId) {
       .then(buff => resolve(JSON.parse(buff.toString())))
       .catch(err => {
         console.error(err);
-        return err;
+        return reject(err);
       });
   });
 };
 
-storage.fecthAll = function(schema) {
+storage.fetchAll = function(schema) {
   debug('#fetchAll');
 
   return new Promise((resolve, reject) => {
@@ -60,7 +60,7 @@ storage.update = function(schema, item) {
   });
 };
 
-storage.delete = function(schema, itemId) {
+storage.destroy = function(schema, itemId) {
   debug('#destroy');
 
   return new Promise((resolve, reject) => {
