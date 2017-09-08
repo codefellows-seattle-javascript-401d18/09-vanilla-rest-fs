@@ -44,7 +44,7 @@ describe('Testing toy routes', function() {
         });
       });
       describe('Invalid Requests', () => {
-        test('should return 404', done => {
+        test('should return 400', done => {
           superagent.post(':3000/api/toy')
             .type('application/json')
             .send()
@@ -142,9 +142,9 @@ describe('Testing toy routes', function() {
     //send no id
     describe('DELETE requests', ()=> {
       describe('Valid requests', () => {
-          test('confirm that it deleted a thing', done => {
-            console.log(this.mockToy)
-            superagent.delete(':3000/api/toy')
+        test('confirm that it deleted a thing', done => {
+          console.log(this.mockToy);
+          superagent.delete(':3000/api/toy')
             .query({_id: this.mockToy._id})
             .then(res => {
               this.resDelete = res;
