@@ -26,7 +26,7 @@ module.exports = function (router) {
           return response(res, 200, toy);
         })
         .catch(err =>  {
-          return response(res, 404, err.message);
+          return response(res, 400, err.message);
         });
     }
     return storage.fetchAll('toy')
