@@ -8,4 +8,4 @@ module.exports = function(name, desc) {
   this.name = name;
   this.desc = desc;
   this._id = uuid();
-}; 
+};

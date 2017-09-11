@@ -12,23 +12,8 @@ module.exports = function(res, status, data) {
     res.end();
   } catch(e) {
     debug('#Text version response');
-    res.write(status, {'Content-Type': 'text/plain'});
+    res.writeHead(status, {'Content-Type': 'text/plain'});
     res.write(data);
     res.end();
   }
 };
-
-//What I had previously:
-// response.sendJson = function(res, status, data) {
-//   debug('say bye Json!');
-//   res.writeHead(status, {'Content-Type': 'application/json'});
-//   res.write(JSON.stringify(data));
-//   res.end();
-// };
-//
-// response.sendText = function(res, status, data) {
-//   debug('say bye text!');
-//   res.writeHead(status, {'Content-Type': 'text/plain'});
-//   res.write(data);
-//   res.end();
-// };
